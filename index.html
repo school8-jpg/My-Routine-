@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#38bdf8">
+<title>My Daily Tracker</title>
+
+<style>
+:root{
+  --primary:#38bdf8;
+  --primary-dark:#0284c7;
+  --bg:#f4faff;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --green:#16a34a;
+  --red:#dc2626;
+  --shadow:0 8px 25px rgba(15,23,42,.08);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:85px;
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+.app{
+  max-width:700px;
+  margin:auto;
+  min-height:100vh;
+}
+
+header{
+  background:linear-gradient(135deg,#38bdf8,#0284c7);
+  color:white;
+  padding:24px 18px 28px;
+  border-radius:0 0 28px 28px;
+}
+
+.header-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+h1{
+  margin:0;
+  font-size:25px;
+}
+
+.header-date{
+  margin-top:7px;
+  opacity:.9;
+  font-size:14px;
+}
+
+.header-settings{
+  border:0;
+  background:rgba(255,255,255,.18);
+  color:white;
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  font-size:21px;
+}
+
+.progress-card{
+  background:rgba(255,255,255,.16);
+  margin-top:20px;
+  padding:16px;
+  border-radius:18px;
+}
+
+.progress-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-weight:bold;
+}
+
+.progress{
+  height:10px;
+  background:rgba(255,255,255,.25);
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  height:100%;
+  background:white;
+  width:0%;
+  border-radius:20px;
+  transition:.2s;
+}
+
+main{
+  padding:18px;
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:5px 0 14px;
+}
+
+.section-title h2{
+  margin:0;
+  font-size:19px;
+}
+
+.add-btn{
+  border:0;
+  background:var(--primary);
+  color:white;
+  padding:11px 15px;
+  border-radius:12px;
+  font-weight:bold;
+}
+
+.habit-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:13px;
+  box-shadow:var(--shadow);
+}
+
+.habit-top{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.habit-icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  background:#e0f2fe;
+  border-radius:15px;
+  font-size:25px;
+}
+
+.habit-info{
+  flex:1;
+}
+
+.habit-name{
+  font-weight:bold;
+  font-size:16px;
+}
+
+.habit-desc{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.habit-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:14px;
+}
+
+.done,.notdone{
+  min-height:46px;
+  border-radius:12px;
+  border:2px solid;
+  font-weight:bold;
+}
+
+.done{
+  border-color:#bbf7d0;
+  background:#f0fdf4;
+  color:var(--green);
+}
+
+.notdone{
+  border-color:#fecaca;
+  background:#fef2f2;
+  color:var(--red);
+}
+
+.done.selected{
+  background:var(--green);
+  color:white;
+}
+
+.notdone.selected{
+  background:var(--red);
+  color:white;
+}
+
+.more-actions{
+  display:flex;
+  gap:7px;
+  margin-top:10px;
+}
+
+.small-btn{
+  flex:1;
+  border:1px solid var(--border);
+  background:#f8fafc;
+  padding:9px;
+  border-radius:10px;
+  font-size:12px;
+}
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.stat-card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:17px;
+  box-shadow:var(--shadow);
+}
+
+.stat-number{
+  font-size:25px;
+  font-weight:bold;
+  color:var(--primary-dark);
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+.list-card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:15px;
+  margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+
+.calendar{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:13px;
+}
+
+.calendar-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.calendar-head button{
+  width:40px;
+  height:40px;
+  border:0;
+  background:#e0f2fe;
+  border-radius:11px;
+}
+
+.week,.days{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:5px;
+}
+
+.week div{
+  text-align:center;
+  font-size:11px;
+  color:var(--muted);
+  padding:5px 0;
+}
+
+.day{
+  aspect-ratio:1;
+  border:1px solid var(--border);
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  font-size:12px;
+  position:relative;
+  background:white;
+}
+
+.day.complete{
+  background:#dcfce7;
+  border-color:#86efac;
+  color:#166534;
+}
+
+.day.partial{
+  background:#fef3c7;
+  border-color:#fcd34d;
+}
+
+.day.failed{
+  background:#fee2e2;
+  border-color:#fca5a5;
+  color:#991b1b;
+}
+
+.day.today{
+  outline:3px solid #38bdf8;
+}
+
+.day .dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:currentColor;
+  position:absolute;
+  bottom:4px;
+}
+
+.form-group{
+  margin-bottom:14px;
+}
+
+.form-group label{
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:7px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px;
+  background:white;
+  outline:none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+  border-color:var(--primary);
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  z-index:1000;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.show{display:flex}
+
+.modal-box{
+  width:100%;
+  max-width:700px;
+  background:white;
+  border-radius:25px 25px 0 0;
+  padding:22px;
+  max-height:90vh;
+  overflow:auto;
+}
+
+.modal-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.modal-title h3{margin:0}
+
+.close{
+  border:0;
+  background:#f1f5f9;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+}
+
+.primary-btn{
+  width:100%;
+  border:0;
+  background:var(--primary-dark);
+  color:white;
+  padding:14px;
+  border-radius:13px;
+  font-weight:bold;
+}
+
+.secondary-btn{
+  width:100%;
+  border:1px solid var(--border);
+  background:white;
+  padding:13px;
+  border-radius:13px;
+  margin-top:9px;
+}
+
+.setting-item{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:15px;
+  margin-bottom:10px;
+}
+
+.setting-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.setting-title{
+  font-weight:bold;
+}
+
+.setting-desc{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.switch{
+  width:48px;
+  height:28px;
+  border-radius:20px;
+  border:0;
+  background:#cbd5e1;
+  padding:3px;
+}
+
+.switch span{
+  display:block;
+  width:22px;
+  height:22px;
+  background:white;
+  border-radius:50%;
+  transition:.2s;
+}
+
+.switch.on{
+  background:var(--primary-dark);
+}
+
+.switch.on span{
+  transform:translateX(20px);
+}
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:700px;
+  background:white;
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:7px 5px calc(7px + env(safe-area-inset-bottom));
+  z-index:500;
+}
+
+.nav-btn{
+  border:0;
+  background:white;
+  color:var(--muted);
+  padding:8px 2px;
+  border-radius:12px;
+  font-size:11px;
+}
+
+.nav-btn span{
+  display:block;
+  font-size:21px;
+  margin-bottom:3px;
+}
+
+.nav-btn.active{
+  color:var(--primary-dark);
+  background:#effaff;
+  font-weight:bold;
+}
+
+.empty{
+  text-align:center;
+  background:white;
+  border:1px dashed var(--border);
+  border-radius:17px;
+  padding:30px 15px;
+  color:var(--muted);
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:90px;
+  transform:translateX(-50%) translateY(20px);
+  background:#0f172a;
+  color:white;
+  padding:12px 17px;
+  border-radius:12px;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  z-index:2000;
+  font-size:13px;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+body.dark{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --border:#334155;
+}
+
+body.dark .bottom-nav,
+body.dark .nav-btn,
+body.dark .modal-box,
+body.dark .form-group input,
+body.dark .form-group textarea,
+body.dark .form-group select,
+body.dark .day,
+body.dark .calendar,
+body.dark .setting-item,
+body.dark .list-card,
+body.dark .stat-card,
+body.dark .habit-card,
+body.dark .secondary-btn{
+  background:#1e293b;
+  color:#f8fafc;
+}
+
+body.dark .small-btn{
+  background:#0f172a;
+  color:white;
+}
+
+@media(min-width:701px){
+  .bottom-nav{
+    border-radius:18px 18px 0 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="header-top">
+    <div>
+      <h1>My Daily Tracker</h1>
+      <div class="header-date" id="todayText"></div>
+    </div>
+    <button class="header-settings" onclick="showPage('settings')" aria-label="Settings">⚙️</button>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-row">
+      <span>Today's Progress</span>
+      <span id="progressText">0/0 · 0%</span>
+    </div>
+    <div class="progress">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- HOME -->
+<section class="page active" id="homePage">
+  <div class="section-title">
+    <h2>Today's Habits</h2>
+    <button class="add-btn" onclick="openHabitModal()">+ Add</button>
+  </div>
+  <div id="habitList"></div>
+</section>
+
+<!-- HISTORY -->
+<section class="page" id="historyPage">
+  <div class="section-title">
+    <h2>History</h2>
+  </div>
+
+  <div class="stats-grid" id="historyStats"></div>
+
+  <div style="height:18px"></div>
+
+  <div class="calendar">
+    <div class="calendar-head">
+      <button onclick="changeMonth(-1)">‹</button>
+      <strong id="calendarTitle"></strong>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+
+    <div class="week">
+      <div>Sun</div><div>Mon</div><div>Tue</div>
+      <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+    </div>
+
+    <div class="days" id="calendarDays"></div>
+  </div>
+
+  <div style="height:15px"></div>
+  <div id="historyList"></div>
+</section>
+
+<!-- STATISTICS -->
+<section class="page" id="statisticsPage">
+  <div class="section-title">
+    <h2>Statistics</h2>
+  </div>
+
+  <div class="stats-grid" id="overallStats"></div>
+
+  <div style="height:18px"></div>
+
+  <h3>Habit Statistics</h3>
+  <div id="habitStats"></div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="settingsPage">
+  <div class="section-title">
+    <h2>Settings</h2>
+  </div>
+
+  <div class="setting-item">
+    <div class="setting-row">
+      <div>
+        <div class="setting-title">➕ Manage Habits</div>
+        <div class="setting-desc">Add, edit, delete and reorder habits</div>
+      </div>
+      <button class="add-btn" onclick="openManageHabits()">Open</button>
+    </div>
+  </div>
+
+  <div class="setting-item">
+    <div class="setting-row">
+      <div>
+        <div class="setting-title">🌙 Dark Mode</div>
+        <div class="setting-desc">Switch between light and dark theme</div>
+      </div>
+      <button class="switch" id="darkSwitch" onclick="toggleDark()">
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="setting-item">
+    <div class="setting-row">
+      <div>
+        <div class="setting-title">🔔 Daily Reminder</div>
+        <div class="setting-desc">Save your preferred reminder time</div>
+      </div>
+      <button class="switch" id="reminderSwitch" onclick="toggleReminder()">
+        <span></span>
+      </button>
+    </div>
+
+    <div id="reminderBox" style="display:none;margin-top:12px">
+      <input type="time" id="reminderTime"
+             onchange="saveReminderTime()"
+             style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px">
+    </div>
+  </div>
+
+  <div class="setting-item">
+    <div class="setting-row">
+      <div>
+        <div class="setting-title">🔊 Touch Feedback</div>
+        <div class="setting-desc">Show confirmation messages</div>
+      </div>
+      <button class="switch on" id="feedbackSwitch" onclick="toggleFeedback()">
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="setting-item">
+    <button class="primary-btn" onclick="resetToday()">🔄 Reset Today</button>
+  </div>
+
+  <div class="setting-item">
+    <button class="primary-btn" onclick="exportData()">📤 Export Data</button>
+    <input type="file" id="importFile" accept=".json"
+           onchange="importData(event)"
+           style="display:none">
+    <button class="secondary-btn" onclick="document.getElementById('importFile').click()">
+      📥 Import Data
+    </button>
+  </div>
+
+  <div class="setting-item">
+    <button class="primary-btn" style="background:#dc2626"
+            onclick="deleteAllData()">🗑️ Delete All Data</button>
+  </div>
+
+  <div class="setting-item">
+    <div class="setting-title">ℹ️ About</div>
+    <div class="setting-desc">
+      My Daily Tracker<br>
+      Personal habit tracking app<br>
+      Version 1.0
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-page="home" onclick="showPage('home')">
+    <span>🏠</span>Home
+  </button>
+  <button class="nav-btn" data-page="history" onclick="showPage('history')">
+    <span>📅</span>History
+  </button>
+  <button class="nav-btn" data-page="statistics" onclick="showPage('statistics')">
+    <span>📊</span>Statistics
+  </button>
+  <button class="nav-btn" data-page="settings" onclick="showPage('settings')">
+    <span>⚙️</span>Settings
+  </button>
+</nav>
+
+</div>
+
+<!-- HABIT MODAL -->
+<div class="modal" id="habitModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <h3 id="habitModalTitle">Add Habit</h3>
+      <button class="close" onclick="closeHabitModal()">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>Habit Name</label>
+      <input id="habitName" placeholder="Example: Gym">
+    </div>
+
+    <div class="form-group">
+      <label>Emoji / Icon</label>
+      <input id="habitIcon" value="⭐" maxlength="4">
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="habitDesc" rows="3"
+        placeholder="Optional description"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Daily Goal</label>
+      <input id="habitGoal" type="number" min="1" value="1">
+    </div>
+
+    <button class="primary-btn" onclick="saveHabit()">Save Habit</button>
+    <button class="secondary-btn" onclick="closeHabitModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- MANAGE MODAL -->
+<div class="modal" id="manageModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <h3>Manage Habits</h3>
+      <button class="close" onclick="closeManageHabits()">✕</button>
+    </div>
+    <div id="manageList"></div>
+    <button class="primary-btn" onclick="closeManageHabits();openHabitModal()">
+      + Add New Habit
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================================
+   MY DAILY TRACKER
+   ALL-IN-ONE JAVASCRIPT
+================================ */
+
+const STORAGE_KEY = "my_daily_tracker_v1";
+
+let appData = loadData();
+let editingHabitId = null;
+let calendarDate = new Date();
+let feedback = true;
+
+const defaultHabits = [
+  {
+    id: crypto.randomUUID(),
+    name:"No Masturbation",
+    icon:"🚫",
+    desc:"Manual self-control tracking",
+    goal:1,
+    active:true,
+    order:0
+  },
+  {
+    id:crypto.randomUUID(),
+    name:"Running",
+    icon:"🏃",
+    desc:"Complete your running practice",
+    goal:1,
+    active:true,
+    order:1
+  },
+  {
+    id:crypto.randomUUID(),
+    name:"Lecture 1",
+    icon:"📚",
+    desc:"Complete Lecture 1",
+    goal:1,
+    active:true,
+    order:2
+  },
+  {
+    id:crypto.randomUUID(),
+    name:"Lecture 2",
+    icon:"📚",
+    desc:"Complete Lecture 2",
+    goal:1,
+    active:true,
+    order:3
+  },
+  {
+    id:crypto.randomUUID(),
+    name:"Lecture 3",
+    icon:"📚",
+    desc:"Complete Lecture 3",
+    goal:1,
+    active:true,
+    order:4
+  }
+];
+
+function loadData(){
+  try{
+    const saved=localStorage.getItem(STORAGE_KEY);
+
+    if(saved){
+      return JSON.parse(saved);
+    }
+
+    return {
+      habits:defaultHabits,
+      records:{},
+      settings:{
+        dark:false,
+        reminder:false,
+        reminderTime:"08:00",
+        feedback:true
+      }
+    };
+  }catch(e){
+    return {
+      habits:defaultHabits,
+      records:{},
+      settings:{
+        dark:false,
+        reminder:false,
+        reminderTime:"08:00",
+        feedback:true
+      }
+    };
+  }
+}
+
+function saveData(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(appData));
+}
+
+function todayKey(){
+  const d=new Date();
+  return formatKey(d);
+}
+
+function formatKey(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+function getActiveHabits(){
+  return [...appData.habits]
+    .filter(h=>h.active)
+    .sort((a,b)=>a.order-b.order);
+}
+
+function getRecord(dateKey){
+  if(!appData.records[dateKey]){
+    appData.records[dateKey]={};
+  }
+  return appData.records[dateKey];
+}
+
+function setStatus(habitId,status,date=todayKey()){
+  const record=getRecord(date);
+  record[habitId]=status;
+  saveData();
+  renderAll();
+  toast(status==="done" ? "Habit completed ✓" : "Marked not done");
+}
+
+function getDayStats(dateKey){
+  const habits=getActiveHabits();
+  const record=appData.records[dateKey]||{};
+
+  let done=0;
+  let notDone=0;
+
+  habits.forEach(h=>{
+    if(record[h.id]==="done") done++;
+    if(record[h.id]==="notdone") notDone++;
+  });
+
+  const total=habits.length;
+  const marked=done+notDone;
+  const percent=total ? Math.round(done/total*100) : 0;
+
+  return {done,notDone,total,marked,percent};
+}
+
+function renderHome(){
+  const list=document.getElementById("habitList");
+  const habits=getActiveHabits();
+  const record=getRecord(todayKey());
+
+  list.innerHTML="";
+
+  if(!habits.length){
+    list.innerHTML=`
+      <div class="empty">
+        <div style="font-size:35px">➕</div>
+        <p>No active habits.</p>
+        <button class="add-btn" onclick="openHabitModal()">Add Your First Habit</button>
+      </div>`;
+    updateProgress();
+    return;
+  }
+
+  habits.forEach(h=>{
+    const status=record[h.id]||"";
+
+    const card=document.createElement("div");
+    card.className="habit-card";
+
+    card.innerHTML=`
+      <div class="habit-top">
+        <div class="habit-icon">${escapeHTML(h.icon)}</div>
+        <div class="habit-info">
+          <div class="habit-name">${escapeHTML(h.name)}</div>
+          <div class="habit-desc">${escapeHTML(h.desc||"Daily habit")}</div>
+        </div>
+      </div>
+
+      <div class="habit-actions">
+        <button class="done ${status==="done"?"selected":""}"
+          onclick="setStatus('${h.id}','done')">
+          ✓ DONE
+        </button>
+
+        <button class="notdone ${status==="notdone"?"selected":""}"
+          onclick="setStatus('${h.id}','notdone')">
+          ✕ NOT DONE
+        </button>
+      </div>
+
+      <div class="more-actions">
+        <button class="small-btn" onclick="openHabitModal('${h.id}')">✏️ Edit</button>
+      </div>
+    `;
+
+    list.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const stats=getDayStats(todayKey());
+
+  document.getElementById("progressText").textContent=
+    `${stats.done}/${stats.total} · ${stats.percent}%`;
+
+  document.getElementById("progressFill").style.width=
+    stats.percent+"%";
+}
+
+function renderHistoryStats(){
+  const allDates=Object.keys(appData.records)
+    .filter(k=>k<=todayKey());
+
+  let complete=0;
+  let incomplete=0;
+
+  allDates.forEach(k=>{
+    const s=getDayStats(k);
+    if(s.total && s.done===s.total) complete++;
+    else if(s.marked>0) incomplete++;
+  });
+
+  document.getElementById("historyStats").innerHTML=`
+    <div class="stat-card">
+      <div class="stat-number">${complete}</div>
+      <div class="stat-label">Completed Days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">${incomplete}</div>
+      <div class="stat-label">Other Days</div>
+    </div>
+  `;
+}
+
+function renderCalendar(){
+  const year=calendarDate.getFullYear();
+  const month=calendarDate.getMonth();
+
+  document.getElementById("calendarTitle").textContent=
+    calendarDate.toLocaleDateString("en-IN",{
+      month:"long",
+      year:"numeric"
+    });
+
+  const first=new Date(year,month,1);
+  const last=new Date(year,month+1,0);
+
+  const container=document.getElementById("calendarDays");
+  container.innerHTML="";
+
+  for(let i=0;i<first.getDay();i++){
+    const blank=document.createElement("div");
+    container.appendChild(blank);
+  }
+
+  for(let day=1;day<=last.getDate();day++){
+    const d=new Date(year,month,day);
+    const key=formatKey(d);
+    const stats=getDayStats(key);
+
+    const el=document.createElement("button");
+    el.className="day";
+
+    if(key===todayKey()) el.classList.add("today");
+
+    if(stats.total && stats.done===stats.total){
+      el.classList.add("complete");
+    }else if(stats.marked>0 && stats.notDone>0){
+      el.classList.add("partial");
+    }else if(stats.notDone===stats.total && stats.total){
+      el.classList.add("failed");
+    }
+
+    el.innerHTML=`${day}<span class="dot"></span>`;
+
+    el.onclick=()=>{
+      showDayDetails(key);
+    };
+
+    container.appendChild(el);
+  }
+}
+
+function changeMonth(amount){
+  calendarDate.setMonth(calendarDate.getMonth()+amount);
+  renderCalendar();
+}
+
+function showDayDetails(key){
+  const d=new Date(key+"T12:00:00");
+  const stats=getDayStats(key);
+  const record=appData.records[key]||{};
+
+  let html=`
+    <h3>${d.toLocaleDateString("en-IN",{
+      day:"numeric",month:"long",year:"numeric"
+    })}</h3>
+    <p><b>${stats.done}/${stats.total}</b> completed · ${stats.percent}%</p>
+  `;
+
+  getActiveHabits().forEach(h=>{
+    const status=record[h.id]||"Not marked";
+    html+=`
+      <div class="setting-item">
+        ${h.icon} ${escapeHTML(h.name)}
+        <strong style="float:right">
+          ${status==="done"?"✓ DONE":
+            status==="notdone"?"✕ NOT DONE":"—"}
+        </strong>
+      </div>`;
+  });
+
+  openSimpleModal(html);
+}
+
+function renderHistoryList(){
+  const container=document.getElementById("historyList");
+  const dates=Object.keys(appData.records)
+    .sort((a,b)=>b.localeCompare(a))
+    .slice(0,30);
+
+  if(!dates.length){
+    container.innerHTML=`<div class="empty">No history yet.</div>`;
+    return;
+  }
+
+  container.innerHTML="";
+
+  dates.forEach(key=>{
+    const d=new Date(key+"T12:00:00");
+    const s=getDayStats(key);
+
+    const div=document.createElement("div");
+    div.className="list-card";
+
+    div.innerHTML=`
+      <strong>${d.toLocaleDateString("en-IN",{
+        weekday:"short",
+        day:"numeric",
+        month:"short",
+        year:"numeric"
+      })}</strong>
+
+      <div style="margin-top:7px;color:var(--muted)">
+        ${s.done}/${s.total} completed · ${s.percent}%
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function calculateStreaks(){
+  const dates=Object.keys(appData.records).sort();
+
+  let current=0;
+  let best=0;
+  let previous=null;
+
+  for(const key of dates){
+    const s=getDayStats(key);
+
+    if(!s.total || s.done!==s.total){
+      current=0;
+      previous=null;
+      continue;
+    }
+
+    if(previous){
+      const p=new Date(previous+"T12:00:00");
+      const c=new Date(key+"T12:00:00");
+      const diff=(c-p)/86400000;
+
+      if(diff===1) current++;
+      else current=1;
+    }else{
+      current=1;
+    }
+
+    if(current>best) best=current;
+    previous=key;
+  }
+
+  const today=todayKey();
+  const yesterday=new Date();
+  yesterday.setDate(yesterday.getDate()-1);
+
+  const todayComplete=getDayStats(today).done===getDayStats(today).total &&
+    getDayStats(today).total>0;
+
+  const yesterdayKey=formatKey(yesterday);
+  const yesterdayComplete=getDayStats(yesterdayKey).done===
+    getDayStats(yesterdayKey).total &&
+    getDayStats(yesterdayKey).total>0;
+
+  if(!todayComplete && !yesterdayComplete){
+    current=0;
+  }
+
+  return {current,best};
+}
+
+function renderStatistics(){
+  const habits=getActiveHabits();
+  const dates=Object.keys(appData.records);
+  let totalDone=0;
+  let totalPossible=0;
+
+  dates.forEach(k=>{
+    const s=getDayStats(k);
+    totalDone+=s.done;
+    totalPossible+=s.total;
+  });
+
+  const percent=totalPossible?
+    Math.round(totalDone/totalPossible*100):0;
+
+  const streak=calculateStreaks();
+
+  document.getElementById("overallStats").innerHTML=`
+    <div class="stat-card">
+      <div class="stat-number">${totalDone}</div>
+      <div class="stat-label">Total Done</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number">${percent}%</div>
+      <div class="stat-label">Overall Progress</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number">${streak.current}</div>
+      <div class="stat-label">Current Streak 🔥</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number">${streak.best}</div>
+      <div class="stat-label">Best Streak 🏆</div>
+    </div>
+  `;
+
+  const container=document.getElementById("habitStats");
+  container.innerHTML="";
+
+  habits.forEach(h=>{
+    let done=0;
+    let notdone=0;
+
+    dates.forEach(k=>{
+      const status=(appData.records[k]||{})[h.id];
+      if(status==="done") done++;
+      if(status==="notdone") notdone++;
+    });
+
+    const total=done+notdone;
+    const p=total?Math.round(done/total*100):0;
+
+    const card=document.createElement("div");
+    card.className="list-card";
+
+    card.innerHTML=`
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:25px">${escapeHTML(h.icon)}</span>
+        <strong>${escapeHTML(h.name)}</strong>
+      </div>
+
+      <div style="margin-top:12px">
+        Done: <b>${done}</b> · Not Done: <b>${notdone}</b>
+      </div>
+
+      <div class="progress" style="margin-top:10px;background:#e2e8f0">
+        <div class="progress-fill"
+             style="width:${p}%;background:var(--primary)">
+        </div>
+      </div>
+
+      <div style="margin-top:7px;font-size:13px;color:var(--muted)">
+        Completion: ${p}%
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function openHabitModal(id=null){
+  editingHabitId=id;
+
+  document.getElementById("habitModal").classList.add("show");
+
+  if(id){
+    const h=appData.habits.find(x=>x.id===id);
+
+    document.getElementById("habitModalTitle").textContent="Edit Habit";
+    document.getElementById("habitName").value=h.name;
+    document.getElementById("habitIcon").value=h.icon;
+    document.getElementById("habitDesc").value=h.desc||"";
+    document.getElementById("habitGoal").value=h.goal||1;
+  }else{
+    document.getElementById("habitModalTitle").textContent="Add Habit";
+    document.getElementById("habitName").value="";
+    document.getElementById("habitIcon").value="⭐";
+    document.getElementById("habitDesc").value="";
+    document.getElementById("habitGoal").value=1;
+  }
+}
+
+function closeHabitModal(){
+  document.getElementById("habitModal").classList.remove("show");
+  editingHabitId=null;
+}
+
+function saveHabit(){
+  const name=document.getElementById("habitName").value.trim();
+
+  if(!name){
+    alert("Please enter habit name.");
+    return;
+  }
+
+  const icon=document.getElementById("habitIcon").value.trim()||"⭐";
+  const desc=document.getElementById("habitDesc").value.trim();
+  const goal=Math.max(1,Number(document.getElementById("habitGoal").value)||1);
+
+  if(editingHabitId){
+    const h=appData.habits.find(x=>x.id===editingHabitId);
+
+    h.name=name;
+    h.icon=icon;
+    h.desc=desc;
+    h.goal=goal;
+
+    toast("Habit updated ✓");
+  }else{
+    const maxOrder=appData.habits.length
+      ? Math.max(...appData.habits.map(h=>h.order))
+      : -1;
+
+    appData.habits.push({
+      id:crypto.randomUUID(),
+      name,
+      icon,
+      desc,
+      goal,
+      active:true,
+      order:maxOrder+1
+    });
+
+    toast("Habit added ✓");
+  }
+
+  saveData();
+  closeHabitModal();
+  renderAll();
+}
+
+function openManageHabits(){
+  renderManageList();
+  document.getElementById("manageModal").classList.add("show");
+}
+
+function closeManageHabits(){
+  document.getElementById("manageModal").classList.remove("show");
+}
+
+function renderManageList(){
+  const container=document.getElementById("manageList");
+
+  const habits=[...appData.habits].sort((a,b)=>a.order-b.order);
+
+  container.innerHTML="";
+
+  if(!habits.length){
+    container.innerHTML=`<div class="empty">No habits.</div>`;
+    return;
+  }
+
+  habits.forEach((h,index)=>{
+    const div=document.createElement("div");
+    div.className="setting-item";
+
+    div.innerHTML=`
+      <div class="setting-row">
+        <div style="flex:1">
+          <div class="setting-title">
+            ${escapeHTML(h.icon)} ${escapeHTML(h.name)}
+          </div>
+          <div class="setting-desc">
+            ${h.active?"Active":"Disabled"}
+          </div>
+        </div>
+
+        <button class="small-btn"
+          onclick="moveHabit('${h.id}',-1)">↑</button>
+
+        <button class="small-btn"
+          onclick="moveHabit('${h.id}',1)">↓</button>
+      </div>
+
+      <div class="more-actions">
+        <button class="small-btn"
+          onclick="toggleHabit('${h.id}')">
+          ${h.active?"Disable":"Enable"}
+        </button>
+
+        <button class="small-btn"
+          onclick="closeManageHabits();openHabitModal('${h.id}')">
+          ✏️ Edit
+        </button>
+
+        <button class="small-btn"
+          onclick="deleteHabit('${h.id}')">
+          🗑️ Delete
+        </button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function toggleHabit(id){
+  const h=appData.habits.find(x=>x.id===id);
+  h.active=!h.active;
+  saveData();
+  renderManageList();
+  renderAll();
+  toast(h.active?"Habit enabled":"Habit disabled");
+}
+
+function deleteHabit(id){
+  const h=appData.habits.find(x=>x.id===id);
+
+  if(!confirm(`Delete "${h.name}"?\n\nThis will remove its stored history.`)){
+    return;
+  }
+
+  appData.habits=appData.habits.filter(x=>x.id!==id);
+
+  Object.keys(appData.records).forEach(date=>{
+    delete appData.records[date][id];
+  });
+
+  saveData();
+  renderManageList();
+  renderAll();
+  toast("Habit deleted");
+}
+
+function moveHabit(id,direction){
+  const habits=[...appData.habits].sort((a,b)=>a.order-b.order);
+  const index=habits.findIndex(h=>h.id===id);
+  const target=index+direction;
+
+  if(target<0 || target>=habits.length)return;
+
+  [habits[index].order,habits[target].order]=
+  [habits[target].order,habits[index].order];
+
+  appData.habits=habits;
+  saveData();
+  renderManageList();
+  renderAll();
+}
+
+function resetToday(){
+  if(!confirm("Reset today's progress?"))return;
+
+  delete appData.records[todayKey()];
+  saveData();
+  renderAll();
+  toast("Today's progress reset");
+}
+
+function deleteAllData(){
+  if(!confirm("DELETE ALL DATA?\n\nThis cannot be undone."))return;
+
+  localStorage.removeItem(STORAGE_KEY);
+
+  appData={
+    habits:[],
+    records:{},
+    settings:{
+      dark:false,
+      reminder:false,
+      reminderTime:"08:00",
+      feedback:true
+    }
+  };
+
+  document.body.classList.remove("dark");
+
+  saveData();
+  renderAll();
+
+  toast("All data deleted");
+}
+
+function exportData(){
+  const blob=new Blob(
+    [JSON.stringify(appData,null,2)],
+    {type:"application/json"}
+  );
+
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download="my-daily-tracker-backup.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+  toast("Backup exported");
+}
+
+function importData(event){
+  const file=event.target.files[0];
+
+  if(!file)return;
+
+  const reader=new FileReader();
+
+  reader.onload=function(){
+    try{
+      const imported=JSON.parse(reader.result);
+
+      if(!imported.habits || !imported.records){
+        throw new Error("Invalid backup");
+      }
+
+      if(!confirm("Import this backup and replace current data?")){
+        return;
+      }
+
+      appData=imported;
+      saveData();
+      applySettings();
+      renderAll();
+
+      toast("Backup imported ✓");
+
+    }catch(e){
+      alert("Invalid backup file.");
+    }
+
+    event.target.value="";
+  };
+
+  reader.readAsText(file);
+}
+
+function toggleDark(){
+  appData.settings.dark=!appData.settings.dark;
+  saveData();
+  applySettings();
+}
+
+function toggleReminder(){
+  appData.settings.reminder=!appData.settings.reminder;
+  saveData();
+  applySettings();
+
+  toast(appData.settings.reminder?
+    "Reminder enabled":
+    "Reminder disabled");
+}
+
+function saveReminderTime(){
+  appData.settings.reminderTime=
+    document.getElementById("reminderTime").value;
+
+  saveData();
+  toast("Reminder time saved");
+}
+
+function toggleFeedback(){
+  appData.settings.feedback=!appData.settings.feedback;
+  feedback=appData.settings.feedback;
+  saveData();
+  applySettings();
+}
+
+function applySettings(){
+  const dark=!!appData.settings.dark;
+
+  document.body.classList.toggle("dark",dark);
+
+  const ds=document.getElementById("darkSwitch");
+  ds.classList.toggle("on",dark);
+
+  const rs=document.getElementById("reminderSwitch");
+  rs.classList.toggle("on",!!appData.settings.reminder);
+
+  document.getElementById("reminderBox").style.display=
+    appData.settings.reminder?"block":"none";
+
+  document.getElementById("reminderTime").value=
+    appData.settings.reminderTime||"08:00";
+
+  const fs=document.getElementById("feedbackSwitch");
+  fs.classList.toggle("on",appData.settings.feedback!==false);
+
+  feedback=appData.settings.feedback!==false;
+}
+
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>{
+    p.classList.remove("active");
+  });
+
+  document.getElementById(page+"Page").classList.add("active");
+
+  document.querySelectorAll(".nav-btn").forEach(btn=>{
+    btn.classList.toggle(
+      "active",
+      btn.dataset.page===page
+    );
+  });
+
+  if(page==="history"){
+    renderHistoryStats();
+    renderCalendar();
+    renderHistoryList();
+  }
+
+  if(page==="statistics"){
+    renderStatistics();
+  }
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderAll(){
+  document.getElementById("todayText").textContent=
+    new Date().toLocaleDateString("en-IN",{
+      weekday:"long",
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    });
+
+  renderHome();
+  renderHistoryStats();
+  renderCalendar();
+  renderHistoryList();
+  renderStatistics();
+  applySettings();
+}
+
+function toast(message){
+  if(!feedback)return;
+
+  const el=document.getElementById("toast");
+  el.textContent=message;
+  el.classList.add("show");
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer=setTimeout(()=>{
+    el.classList.remove("show");
+  },1800);
+}
+
+function openSimpleModal(html){
+  const modal=document.createElement("div");
+  modal.className="modal show";
+
+  modal.innerHTML=`
+    <div class="modal-box">
+      <div class="modal-title">
+        <h3>Day Details</h3>
+        <button class="close">✕</button>
+      </div>
+      ${html}
+    </div>
+  `;
+
+  modal.querySelector(".close").onclick=()=>{
+    modal.remove();
+  };
+
+  modal.onclick=(e)=>{
+    if(e.target===modal)modal.remove();
+  };
+
+  document.body.appendChild(modal);
+}
+
+function escapeHTML(value){
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* INITIALIZE */
+if(!appData.habits){
+  appData.habits=defaultHabits;
+}
+
+if(!appData.records){
+  appData.records={};
+}
+
+if(!appData.settings){
+  appData.settings={
+    dark:false,
+    reminder:false,
+    reminderTime:"08:00",
+    feedback:true
+  };
+}
+
+saveData();
+renderAll();
+
+/* Close modals when tapping outside */
+document.getElementById("habitModal").addEventListener("click",e=>{
+  if(e.target.id==="habitModal")closeHabitModal();
+});
+
+document.getElementById("manageModal").addEventListener("click",e=>{
+  if(e.target.id==="manageModal")closeManageHabits();
+});
+</script>
+
+</body>
+</html>
